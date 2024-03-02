@@ -1,6 +1,9 @@
-from django.shortcuts import render , get_object_or_404
-from .models import Task
-from .models import Game
+
+from django.shortcuts import render, get_object_or_404
+from .models import Task, Game
+from django.http import HttpResponse
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 def task_list(request):
     tasks = Task.objects.all()
@@ -15,4 +18,28 @@ def sega_games(request):
 
 def game_detail(request, game_id):
     game = get_object_or_404(Game, pk=game_id)
-    return render(request, 'tasks/game_detail.html', {'game': game})
+    game_url = request.build_absolute_uri(game.rom_file.url)
+    rom_file_url = game.rom_file.url
+    return render(request, 'tasks/game_detail.html', {'game': game, 'game_url': game_url, 'rom_file_url': rom_file_url})
+
+
+def dendy_game_rom(request, rom_file):
+    # Получить объект игры на основе имени файла ROM
+    game = get_object_or_404(Game, rom_file=rom_file)
+
+    with open(game.rom_file.path, 'rb') as rom:
+        response = HttpResponse(rom.read(), content_type='application/octet-stream')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(rom_file)
+        return response
+    
+@csrf_exempt
+def load_game_rom(request):
+    if request.method == 'POST':
+        rom_file = request.FILES.get('rom_file')
+        if rom_file:
+            rom_content = rom_file.read()
+            return JsonResponse({'rom_content': rom_content.decode('utf-8')})
+        else:
+            return JsonResponse({'error': 'No ROM file provided'}, status=400)
+    else:
+        return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)

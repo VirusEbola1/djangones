@@ -7,8 +7,18 @@
 </head>
 <body>
     <h1>{{ game.title }}</h1>
-    <p>Платформа: {{ game.platform }}</p>
-    <p>Дата выпуска: {{ game.release_date }}</p>
-    <iframe src="{{ game.rom_url }}" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+    <p>Описание игры: {{ game.description }}</p>
+    <p>Ссылка на файл: <a href="{{ rom_file_url }}">{{ rom_file_url }}</a></p>
+    <div style="width:640px;height:480px;max-width:100%">
+        <div id="game"></div>
+    </div>
+    <script type="text/javascript">
+        EJS_player = '#game';
+        EJS_biosUrl = ''; // URL до BIOS для Famicom Disk System, если это необходимо
+        EJS_gameUrl = '{{ game_url }}'; // URL до игры
+        EJS_core = 'nes'; // Optional core: mesen, nestopia
+        EJS_lightgun = false; // Lightgun
+    </script>
+    <script src="https://www.emulatorjs.com/loader.js"></script>
 </body>
 </html>

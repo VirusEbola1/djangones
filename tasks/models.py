@@ -11,7 +11,7 @@ class Game(models.Model):
     title = models.CharField(max_length=100)
     platform = models.CharField(max_length=50)
     release_date = models.DateField()
-    embed_code = models.TextField(max_length=500) 
+    rom_file = models.FileField(upload_to='dendy/') 
 
     def __str__(self):
         return self.title
