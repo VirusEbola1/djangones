@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игры Dendy</title>
+</head>
+<body>
+    <h1>Игры Dendy</h1>
+    <ul>
+        {% for game in dendy_games %}
+            <li>
+                <h2>
+                    {{ game.title }}
+                    <a href="{% url 'game_detail' game_id=game.id %}">Подробнее</a>
+                </h2>
+                <div style="width:640px;height:480px;max-width:100%">
+                    <div id="game">
+                        <iframe src="{{ game.rom_url }}" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
