@@ -3,22 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ game.title }}</title>
+    <title>Task List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .container ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        .container ul li:last-child {
+            margin-right: 0;
+        }
+        .container ul li a {
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+        }
+        .content {
+            margin: auto;
+            width: 80%;
+            max-width: 800px;
+            text-align: left;
+            padding: 20px;
+            margin-left: 30%;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ game.title }}</h1>
-    <p>Описание игры: {{ game.description }}</p>
-    <div style="width:640px;height:480px;max-width:100%">
-        <div id="game"></div>
+    <div class="container">
+        <h1>Task List</h1>
+        <ul>
+            <li><a href="{% url 'dendy_games' %}">Игры Dendy</a></li>
+            <li><a href="{% url 'sega_games' %}">Игры SEGA</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'profile' %}">Профиль</a></li>
+                <li><a href="{% url 'logout' %}">Выход</a></li>
+            {% else %}
+                <li><a href="{% url 'register' %}">Регистрация</a></li>
+                <li><a href="{% url 'login' %}">Вход</a></li>
+            {% endif %}
+        </ul>
     </div>
-    <script type="text/javascript">
-        EJS_player = '#game';
-        EJS_biosUrl = ''; // URL до BIOS для Famicom Disk System, если это необходимо
-        EJS_gameUrl = '{{ game_url }}'; // URL до игры
-        EJS_core = 'nes'; // Optional core: mesen, nestopia
-        EJS_lightgun = false; // Lightgun
-    </script>
-    <script src="https://www.emulatorjs.com/loader.js"></script>
-    <p><a href="{{ rom_file_url }}">Скачать</a></p>
+    <div class="content">
+        <h1>{{ game.title }}</h1>
+        <p>Описание игры: {{ game.description }}</p>
+        <div style="width:640px;height:480px;max-width:100%">
+            <div id="game"></div>
+        </div>
+        <script type="text/javascript">
+            EJS_player = '#game';
+            EJS_biosUrl = ''; // URL до BIOS для Famicom Disk System, если это необходимо
+            EJS_gameUrl = '{{ game_url }}'; // URL до игры
+            EJS_core = 'nes'; // Optional core: mesen, nestopia
+            EJS_lightgun = false; // Lightgun
+        </script>
+        <script src="https://www.emulatorjs.com/loader.js"></script>
+        <p><a href="{{ rom_file_url }}">Скачать</a></p>
+    </div>
 </body>
 </html>
