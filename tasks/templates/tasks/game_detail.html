@@ -8,7 +8,6 @@
 <body>
     <h1>{{ game.title }}</h1>
     <p>Описание игры: {{ game.description }}</p>
-    <p>Ссылка на файл: <a href="{{ rom_file_url }}">{{ rom_file_url }}</a></p>
     <div style="width:640px;height:480px;max-width:100%">
         <div id="game"></div>
     </div>
@@ -20,5 +19,6 @@
         EJS_lightgun = false; // Lightgun
     </script>
     <script src="https://www.emulatorjs.com/loader.js"></script>
+    <p><a href="{{ rom_file_url }}">Скачать</a></p>
 </body>
 </html>
