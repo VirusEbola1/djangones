@@ -6,6 +6,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
+from .forms import UserLoginForm
+from django.contrib.auth.decorators import login_required
+from .forms import UserProfileForm
 
 def task_list(request):
     tasks = Task.objects.all()
@@ -59,3 +62,37 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration.html', {'form': form})
+
+def user_login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('task_list')  # Redirect to some page after login
+    else:
+        form = UserLoginForm()
+    return render(request, 'registration/login.html', {'form': form})
+
+def home(request):
+    return render(request, 'home.html')
+
+@login_required
+def profile(request):
+    user = request.user
+    return render(request, 'profile.html', {'user': user})
+
+@login_required
+def edit_profile(request):
+    user = request.user
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = UserProfileForm(instance=user)
+    return render(request, 'edit_profile.html', {'form': form})
