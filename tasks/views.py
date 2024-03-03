@@ -1,9 +1,11 @@
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404 , redirect
 from .models import Task, Game
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, authenticate
 
 def task_list(request):
     tasks = Task.objects.all()
@@ -43,3 +45,17 @@ def load_game_rom(request):
             return JsonResponse({'error': 'No ROM file provided'}, status=400)
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+    
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('home')  # Redirect to some page after registration
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration.html', {'form': form})

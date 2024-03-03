@@ -12,6 +12,7 @@ urlpatterns = [
     path('sega/', sega_games, name='sega_games'), 
     path('game/<int:game_id>/', game_detail, name='game_detail'),
     path('dendy/<path:rom_file>/', views.dendy_game_rom, name='dendy_game_rom'),
+    path('register/', views.register, name='register'),
 ]
 
 if settings.DEBUG:
