@@ -15,3 +15,12 @@ class Game(models.Model):
 
     def __str__(self):
         return self.title
+    
+class GameSega(models.Model):
+    title = models.CharField(max_length=100)
+    platform = models.CharField(max_length=50)
+    release_date = models.DateField()
+    rom_file = models.FileField(upload_to='sega/')  # Поле rom_file для платформы SEGA
+
+    def __str__(self):
+        return self.title

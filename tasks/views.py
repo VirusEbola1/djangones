@@ -1,25 +1,23 @@
-
 from django.shortcuts import render, get_object_or_404 , redirect
-from .models import Task, Game
-from django.http import HttpResponse
-from django.http import JsonResponse
+from .models import Task, Game, GameSega  # Импортируем модель GameSega
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
-from .forms import UserLoginForm
+from .forms import UserLoginForm, UserProfileForm
 from django.contrib.auth.decorators import login_required
-from .forms import UserProfileForm
 
 def task_list(request):
     tasks = Task.objects.all()
     return render(request, 'tasks/task_list.html', {'tasks': tasks})
 
 def dendy_games(request):
-    dendy_games = Game.objects.filter(platform='Dendy')  # Получаем список игр для Dendy
+    dendy_games = Game.objects.filter(platform='Dendy')
     return render(request, 'tasks/dendy_games.html', {'dendy_games': dendy_games})
 
 def sega_games(request):
-    return render(request, 'tasks/sega_games.html')
+    sega_games = GameSega.objects.all()  # Используем модель GameSega
+    return render(request, 'tasks/sega_games.html', {'sega_games': sega_games})
 
 def game_detail(request, game_id):
     game = get_object_or_404(Game, pk=game_id)
@@ -27,10 +25,25 @@ def game_detail(request, game_id):
     rom_file_url = game.rom_file.url
     return render(request, 'tasks/game_detail.html', {'game': game, 'game_url': game_url, 'rom_file_url': rom_file_url})
 
+def game_detail_sega(request, game_id):
+    game_sega = get_object_or_404(GameSega, pk=game_id)
+    game_url = request.build_absolute_uri(game_sega.rom_file.url)
+    rom_file_url = game_sega.rom_file.url
+    return render(request, 'tasks/game_detail_sega.html', {'game': game_sega, 'game_url': game_url, 'rom_file_url': rom_file_url})
+
 
 def dendy_game_rom(request, rom_file):
     # Получить объект игры на основе имени файла ROM
     game = get_object_or_404(Game, rom_file=rom_file)
+
+    with open(game.rom_file.path, 'rb') as rom:
+        response = HttpResponse(rom.read(), content_type='application/octet-stream')
+        response['Content-Disposition'] = 'attachment; filename="{}"'.format(rom_file)
+        return response
+    
+def sega_game_rom(request, rom_file):
+    # Получить объект игры на основе имени файла ROM
+    game = get_object_or_404(GameSega, rom_file=rom_file)
 
     with open(game.rom_file.path, 'rb') as rom:
         response = HttpResponse(rom.read(), content_type='application/octet-stream')

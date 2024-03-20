@@ -58,9 +58,7 @@
     <ul>
         {% for game in dendy_games %}
             <li>
-                <h2>
-                    <a href="{% url 'game_detail' game_id=game.id %}">{{ game.title }}</a>
-                </h2>
+                <h2><a href="{% url 'game_detail' game_id=game.id %}">{{ game.title }}</a></h2>
                 <div style="margin-bottom: 20px; width:600px;height: 0px; max-width:100%">
                     <div id="game">
                         <iframe src="{{ game.rom_url }}" width="200" height="50" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>

@@ -9,20 +9,18 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            font-size: 14px; /* Уменьшаем размер шрифта */
         }
         .container {
             text-align: center;
-            margin-top: 20px; /* Минимальный отступ сверху */
+            margin-top: 50px;
         }
         .container ul {
             list-style-type: none;
             padding: 0;
-            margin: 0; /* Убираем внешний отступ у списка */
         }
         .container ul li {
             display: inline;
-            margin-right: 10px; /* Минимальный отступ между элементами списка */
+            margin-right: 20px;
         }
         .container ul li:last-child {
             margin-right: 0;
@@ -32,10 +30,13 @@
             color: #000;
             font-weight: bold;
         }
-        /* Добавляем стили для заголовка списка игр */
-        .container h1 {
-            margin-bottom: 10px; /* Уменьшаем отступ после заголовка */
-            font-size: 1.5em; /* Увеличиваем размер заголовка */
+        .content {
+            margin: auto;
+            width: 80%;
+            max-width: 800px;
+            text-align: left;
+            padding: 20px;
+            margin-left: 30%;
         }
     </style>
 </head>
@@ -54,19 +55,21 @@
             {% endif %}
         </ul>
     </div>
-
-    <h1>Игры SEGA</h1>
-    <ul>
-        {% for game in sega_games %}
-            <li>
-                <h2><a href="{% url 'game_detail_sega' game_id=game.id %}">{{ game.title }}</a></h2>
-                <div style="margin-bottom: 20px; width:600px;height: 0px; max-width:100%">
-                    <div id="game_sega_{{ game.id }}">
-                        <iframe src="{{ game.rom_url }}" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
-                    </div>
-                </div>
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="content">
+        <h1>{{ game.title }}</h1>
+        <p>Описание игры: {{ game.description }}</p> <!-- Добавляем описание игры -->
+        <div style="width:640px;height:480px;max-width:100%">
+            <div id="game"></div>
+        </div>
+        <script type="text/javascript">
+            EJS_player = '#game';
+            EJS_biosUrl = ''; // URL до BIOS для Famicom Disk System, если это необходимо
+            EJS_gameUrl = '{{ game_url }}'; // URL до игры
+            EJS_core = 'segaMD'; // Optional core: mesen, nestopia
+            EJS_lightgun = false; // Lightgun
+        </script>
+        <script src="https://www.emulatorjs.com/loader.js"></script>
+        <p><a href="{{ rom_file_url }}">Скачать</a></p>
+    </div>
 </body>
 </html>
